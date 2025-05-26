@@ -3,6 +3,8 @@ import { AuthProvider } from './contexts/AuthProvider';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
+import React from 'react';
+export default App;
 
 function App() {
   return (

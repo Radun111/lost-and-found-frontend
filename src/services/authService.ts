@@ -1,7 +1,8 @@
 import api from './api';
+import { LoginResponse } from '../types/auth';
 
 export const login = (username: string, password: string) => {
-  return api.post('/auth/login', { username, password });
+  return api.post<LoginResponse>('/auth/login', { username, password });
 };
 
 export const register = (userData: {
