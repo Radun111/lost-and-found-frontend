@@ -1,5 +1,13 @@
 import api from './api';
-import { LoginResponse } from '../types/auth';
+
+interface LoginResponse {
+  token: string;
+  user: {
+    id: string;
+    username: string;
+    role: 'student' | 'staff' | 'admin';
+  };
+}
 
 export const login = (username: string, password: string) => {
   return api.post<LoginResponse>('/auth/login', { username, password });

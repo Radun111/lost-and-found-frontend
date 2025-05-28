@@ -1,15 +1,12 @@
-import axios, { InternalAxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL,
+  baseURL: 'http://localhost:8081/lostfound/api',
 });
 
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = localStorage.getItem(process.env.REACT_APP_TOKEN_KEY!);
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
   if (token) {
-    if (!config.headers) {
-      config.headers = {} as InternalAxiosRequestConfig['headers'];
-    }
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
