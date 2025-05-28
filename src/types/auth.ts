@@ -1,16 +1,16 @@
 export interface User {
   id: string;
   username: string;
-  role: 'USER' | 'STAFF' | 'ADMIN';
+  role: 'student' | 'staff' | 'admin';
 }
 
 export interface AuthContextType {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
-}
-
-export interface LoginResponse {
-  token: string;
-  user: User;
+  register: (userData: {
+    username: string;
+    password: string;
+    role: string;
+  }) => Promise<void>;
 }
