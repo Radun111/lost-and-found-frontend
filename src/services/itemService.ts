@@ -15,3 +15,7 @@ export const updateItemStatus = async (id: string, status: 'CLAIMED'): Promise<I
   const response = await api.patch(`/items/${id}`, { status });
   return response.data;
 };
+
+export const deleteItem = async (id: string): Promise<void> => {
+  await api.delete(`/items/${id}`);
+};
