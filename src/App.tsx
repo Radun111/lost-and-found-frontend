@@ -28,11 +28,16 @@ function App() {
             <Route path="/requests" element={<RequestsPage />} />
           </Route>
 
+          <Route element={<ProtectedRoute allowedRoles={['student']} />}>
+  <Route path="/requests/new" element={<RequestForm />} />
+</Route>
+
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
+    
   );
 }
 
