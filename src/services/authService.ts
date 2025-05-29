@@ -1,6 +1,7 @@
 import api from './api';
 import { User } from '../types/auth';
 
+
 interface LoginResponse {
   token: string;
   user: User;
@@ -50,3 +51,4 @@ export const register = async (userData: {
 const hashPassword = async (password: string): Promise<string> => {
   // Implement bcrypt or similar hashing
 };
+
