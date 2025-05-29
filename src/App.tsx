@@ -7,6 +7,7 @@ import ItemsPage from './pages/ItemsPage';
 import RequestsPage from './pages/RequestsPage';
 import Unauthorized from './pages/Unauthorized';
 import ProtectedRoute from './components/ProtectedRoute'; 
+import RequestForm from './pages/RequestForm';
 
 function App() {
   return (

@@ -1,19 +1,24 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
-function MyNavbar() {
+export default function Navbar() {
+  const { user, logout } = useAuth();
+
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
-      <Container>
-        <Navbar.Brand as={Link} to="/">
-          Greenwood University
-        </Navbar.Brand>
-        <Nav className="me-auto">
-          <Nav.Link as={Link} to="/items">Items</Nav.Link>
-        </Nav>
-      </Container>
-    </Navbar>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container">
+        <Link className="navbar-brand" to="/">
+          Lost & Found
+        </Link>
+        {user && (
+          <button 
+            onClick={logout}
+            className="btn btn-outline-light"
+          >
+            Logout
+          </button>
+        )}
+      </div>
+    </nav>
   );
 }
