@@ -1,9 +1,9 @@
-import { FormEvent, useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { CreateItemDto } from '../types/item';
+import { useState, useRef } from 'react';
+import { Form, Button, Alert } from 'react-bootstrap';
+import { validateItem } from '../utils/validation';
 
 interface ItemFormProps {
-  onSubmit: (item: CreateItemDto) => Promise<void>;
+  onSubmit: (item: CreateItemDto, image?: File) => Promise<void>;
 }
 
 export default function ItemForm({ onSubmit }: ItemFormProps) {
@@ -12,45 +12,45 @@ export default function ItemForm({ onSubmit }: ItemFormProps) {
     description: '',
     status: 'LOST'
   });
+  const [image, setImage] = useState<File | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(item);
+    
+    const validationErrors = {
+      title: validateItem(item).title,
+      ...(image && { image: validateImage(image) })
+    };
+    
+    setErrors(validationErrors);
+    
+    if (!Object.values(validationErrors).some(Boolean)) {
+      await onSubmit(item, image || undefined);
+      resetForm();
+    }
+  };
+
+  const resetForm = () => {
     setItem({ title: '', description: '', status: 'LOST' });
+    setImage(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   return (
     <Form onSubmit={handleSubmit}>
+      {/* Existing fields... */}
+      
       <Form.Group className="mb-3">
-        <Form.Label>Title</Form.Label>
+        <Form.Label>Image</Form.Label>
         <Form.Control
-          type="text"
-          value={item.title}
-          onChange={(e) => setItem({...item, title: e.target.value})}
-          required
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files?.[0] || null)}
+          ref={fileInputRef}
         />
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label>Description</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={3}
-          value={item.description}
-          onChange={(e) => setItem({...item, description: e.target.value})}
-          required
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label>Status</Form.Label>
-        <Form.Select
-          value={item.status}
-          onChange={(e) => setItem({...item, status: e.target.value as 'LOST' | 'FOUND'})}
-        >
-          <option value="LOST">Lost</option>
-          <option value="FOUND">Found</option>
-        </Form.Select>
+        {errors.image && <Alert variant="danger">{errors.image}</Alert>}
       </Form.Group>
 
       <Button variant="primary" type="submit">
@@ -59,3 +59,12 @@ export default function ItemForm({ onSubmit }: ItemFormProps) {
     </Form>
   );
 }
+
+// Add to validation.ts
+export const validateImage = (file: File): string | null => {
+  if (file.size > 5 * 1024 * 1024) return 'Image must be <5MB';
+  if (!['image/jpeg', 'image/png'].includes(file.type)) {
+    return 'Only JPEG/PNG allowed';
+  }
+  return null;
+};
