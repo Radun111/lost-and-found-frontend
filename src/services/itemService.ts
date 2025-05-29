@@ -19,3 +19,11 @@ export const updateItemStatus = async (id: string, status: 'CLAIMED'): Promise<I
 export const deleteItem = async (id: string): Promise<void> => {
   await api.delete(`/items/${id}`);
 };
+
+export const fetchPaginatedItems = async (
+  page: number, 
+  limit: number
+): Promise<{ items: Item[]; total: number }> => {
+  const response = await api.get('/items', { params: { page, limit } });
+  return response.data;
+};
