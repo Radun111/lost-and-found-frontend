@@ -1,42 +1,35 @@
-import { ReactElement } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
 
 interface ProtectedRouteProps {
-  allowedRoles: ('student' | 'staff' | 'admin')[];
+  allowedRoles?: ('student' | 'staff' | 'admin')[];
+  redirectPath?: string;
 }
 
-/**
- * Handles route protection with:
- * - Authentication checks
- * - Role-based access control
- * - Loading states
- * - Error boundaries (handled at App level)
- */
-export default function ProtectedRoute({ 
-  allowedRoles 
-}: ProtectedRouteProps): ReactElement {
+export default function ProtectedRoute({
+  allowedRoles,
+  redirectPath = '/unauthorized'
+}: ProtectedRouteProps) {
   const { user, isLoading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Show spinner while auth state is loading
+  useEffect(() => {
+    if (!isLoading && !user) {
+      navigate('/login', { 
+        state: { from: location },
+        replace: true 
+      });
+    } else if (!isLoading && user && allowedRoles && !allowedRoles.includes(user.role)) {
+      navigate(redirectPath, { replace: true });
+    }
+  }, [user, isLoading, allowedRoles, navigate, location, redirectPath]);
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
-  // Redirect to login if not authenticated
-  if (!user) {
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
-  }
-
-  // Check if user has required role
-  const hasRequiredRole = allowedRoles.includes(user.role);
-  
-  // Redirect to unauthorized if role doesn't match
-  if (!hasRequiredRole) {
-    return <Navigate to="/unauthorized" replace />;
-  }
-
-  // Render child routes if all checks pass
-  return <Outlet />;
+  return user ? <Outlet /> : null;
 }
