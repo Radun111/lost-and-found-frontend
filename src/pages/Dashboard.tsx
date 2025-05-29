@@ -1,47 +1,92 @@
+import { useEffect, useState } from 'react';
+import { Card, Row, Col, Alert } from 'react-bootstrap';
 import Navbar from '../components/Navbar';
+import { useAuth } from '../contexts/AuthContext';
+import { fetchItems, fetchRequests } from '../services';
 
 export default function Dashboard() {
+  const { user } = useAuth();
+  const [stats, setStats] = useState({
+    items: 0,
+    pendingRequests: 0
+  });
+
+  useEffect(() => {
+    const loadData = async () => {
+      const items = await fetchItems();
+      const requests = user?.role !== 'student' ? await fetchRequests() : [];
+      setStats({
+        items: items.length,
+        pendingRequests: requests.filter(r => r.status === 'PENDING').length
+      });
+    };
+    loadData();
+  }, [user]);
+
   return (
     <>
       <Navbar />
-      
       <div className="container mt-4">
-        <div className="row">
-          <div className="col-md-4 mb-4">
-            <div className="card h-100">
-              <div className="card-body">
-                <h5 className="card-title">Lost Items</h5>
-                <p className="card-text">View and manage lost items</p>
-                <a href="/items" className="btn btn-primary">
-                  Go to Lost Items
-                </a>
-              </div>
-            </div>
-          </div>
+        <h2>Welcome, {user?.username}</h2>
+        <p className="text-muted">Role: {user?.role.toUpperCase()}</p>
 
-          <div className="col-md-4 mb-4">
-            <div className="card h-100">
-              <div className="card-body">
-                <h5 className="card-title">Found Items</h5>
-                <p className="card-text">View and manage found items</p>
+        <Row className="mt-4">
+          {/* Student View */}
+          {user?.role === 'student' && (
+            <Col md={4}>
+              <Card className="h-100">
+                <Card.Body>
+                  <Card.Title>Report Lost Item</Card.Title>
+                  <Card.Text>
+                    Found someone's belongings? Report them here.
+                  </Card.Text>
+                  <a href="/items/new" className="btn btn-primary">
+                    Create Report
+                  </a>
+                </Card.Body>
+              </Card>
+            </Col>
+          )}
+
+          {/* Staff/Admin View */}
+          {user?.role !== 'student' && (
+            <Col md={4}>
+              <Card className="h-100">
+                <Card.Body>
+                  <Card.Title>Pending Requests</Card.Title>
+                  <Card.Text>
+                    {stats.pendingRequests} requests awaiting approval
+                  </Card.Text>
+                  <a href="/requests" className="btn btn-warning">
+                    Review Requests
+                  </a>
+                </Card.Body>
+              </Card>
+            </Col>
+          )}
+
+          {/* Common Widget */}
+          <Col md={4}>
+            <Card className="h-100">
+              <Card.Body>
+                <Card.Title>Browse Items</Card.Title>
+                <Card.Text>
+                  {stats.items} items in the system
+                </Card.Text>
                 <a href="/items" className="btn btn-success">
-                  Go to Found Items
+                  View All
                 </a>
-              </div>
-            </div>
-          </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
-          <div className="col-md-4 mb-4">
-            <div className="card h-100">
-              <div className="card-body">
-                <h5 className="card-title">Requests</h5>
-                <p className="card-text">Manage item claims</p>
-                <a href="/requests" className="btn btn-warning">
-                  Go to Requests
-                </a>
-              </div>
-            </div>
-          </div>
+        {/* Recent Activity Section */}
+        <div className="mt-5">
+          <h4>Recent Activity</h4>
+          <Alert variant="info">
+            Feature coming soon!
+          </Alert>
         </div>
       </div>
     </>
