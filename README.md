@@ -1,46 +1,168 @@
-# Getting Started with Create React App
+# Lost and Found Application - Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A comprehensive React TypeScript application for managing lost and found items in an educational institute. This system provides role-based access for students, staff, and administrators with a clean, responsive interface.
 
-## Available Scripts
+## 🎯 Features
 
-In the project directory, you can run:
+### Authentication
 
-### `npm start`
+- Secure login and registration system
+- Role-based access control (Admin, Staff, Student)
+- JWT token simulation with localStorage
+- Protected routes with role restrictions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Admin Features
 
-### `npm test`
+- Dashboard with statistics and activity overview
+- Request management (approve/reject lost items)
+- User management (view, edit, activate/deactivate users)
+- Analytics and reporting capabilities
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+### Staff Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Dashboard with request statistics
+- Request management capabilities
+- Filter and search functionality
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Student Features
 
-### `npm run eject`
+- Personal dashboard
+- Report lost items form with validation
+- View and track personal reports/requests
+- Update or cancel submitted reports
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🛠️ Tech Stack
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- **React 18** with TypeScript
+- **React Router v6** for navigation
+- **Tailwind CSS** for styling
+- **Shadcn/UI** component library
+- **Lucide React** for icons
+- **React Hook Form** for form handling
+- **Local Storage** for state persistence
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+## 📋 Project Structure
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```plaintext
+src/
+├── components/         # Reusable UI components
+│   ├── ui/             # Shadcn UI components
+│   └── ...
+├── contexts/           # React context providers
+│   └── AuthContext.tsx # Authentication context
+├── pages/              # Page components
+│   ├── Login.tsx
+│   ├── RegisterPage.tsx
+│   ├── StudentDashboard.tsx
+│   ├── AdminDashboard.tsx
+│   └── ...
+├── utils/              # Utility functions
+│   └── auth.ts         # Authentication utilities
+├── App.tsx             # Main application component
+└── main.tsx           # Application entry point
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🚀 Installation and Setup
+
+1. Clone the repository:
+
+
+```shellscript
+git clone https://github.com/yourusername/lost-and-found-frontend.git
+cd lost-and-found-frontend
+```
+
+2. Install dependencies:
+
+
+```shellscript
+npm install
+```
+
+3. Start the development server:
+
+
+```shellscript
+npm run dev
+```
+
+4. Build for production:
+
+
+```shellscript
+npm run build
+```
+
+## 🔑 Test Credentials
+
+Use these credentials to test different user roles:
+
+| Role | Email | Password
+|-----|-----|-----
+| Admin | [admin@greenwood.edu](mailto:admin@greenwood.edu) | password123
+| Staff | [staff@greenwood.edu](mailto:staff@greenwood.edu) | password123
+| Student | [student@greenwood.edu](mailto:student@greenwood.edu) | password123
+
+
+## 📱 Responsive Design
+
+The application is fully responsive and works on:
+
+- Desktop computers
+- Tablets
+- Mobile devices
+
+
+## 🔒 Role-Based Access Control
+
+| Page | Admin | Staff | Student
+|-----|-----|-----
+| Dashboard | ✅ | ✅ | ✅
+| Requests | ✅ | ✅ | ❌
+| Users | ✅ | ❌ | ❌
+| Report Item | ❌ | ❌ | ✅
+| My Reports | ❌ | ❌ | ✅
+
+
+## 🧪 Testing
+
+Run tests with:
+
+```shellscript
+npm test
+```
+
+## 📝 Future Enhancements
+
+- Integration with backend API
+- Real-time notifications
+- Image upload for lost items
+- Advanced search and filtering
+- Email notifications
+- Mobile app version
+
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 👥 Contributors
+
+- Your Name - Initial work and development
+
+
+## 🙏 Acknowledgments
+
+- Shadcn/UI for the component library
+- Tailwind CSS for the styling framework
+- React Router team for the routing library
+
+
+---
+
+*This project was created as part of the CMJD - Comprehensive Master Java Developer course assignment.*
