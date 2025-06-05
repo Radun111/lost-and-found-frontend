@@ -1,35 +1,37 @@
-import { useEffect } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import LoadingSpinner from './LoadingSpinner';
+"use client"
+
+import type { ReactNode } from "react"
+import { Navigate } from "react-router-dom"
+import { useAuth } from "../contexts/AuthContext"
 
 interface ProtectedRouteProps {
-  allowedRoles?: ('student' | 'staff' | 'admin')[];
-  redirectPath?: string;
+  children: ReactNode
+  allowedRoles: string[]
 }
 
-export default function ProtectedRoute({
-  allowedRoles,
-  redirectPath = '/unauthorized'
-}: ProtectedRouteProps) {
-  const { user, isLoading } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
+  const { user, isAuthenticated } = useAuth()
 
-  useEffect(() => {
-    if (!isLoading && !user) {
-      navigate('/login', { 
-        state: { from: location },
-        replace: true 
-      });
-    } else if (!isLoading && user && allowedRoles && !allowedRoles.includes(user.role)) {
-      navigate(redirectPath, { replace: true });
-    }
-  }, [user, isLoading, allowedRoles, navigate, location, redirectPath]);
-
-  if (isLoading) {
-    return <LoadingSpinner />;
+  if (!isAuthenticated) {
+    // Not logged in, redirect to login
+    return <Navigate to="/login" replace />
   }
 
-  return user ? <Outlet /> : null;
+  if (!user || !allowedRoles.includes(user.role)) {
+    // User doesn't have the required role
+    // Redirect based on their role
+    if (user?.role === "student") {
+      return <Navigate to="/student/dashboard" replace />
+    } else if (user?.role === "staff" || user?.role === "admin") {
+      return <Navigate to="/dashboard" replace />
+    } else {
+      // Fallback
+      return <Navigate to="/login" replace />
+    }
+  }
+
+  // User is authenticated and has the required role
+  return <>{children}</>
 }
+
+export default ProtectedRoute

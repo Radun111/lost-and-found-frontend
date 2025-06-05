@@ -1,113 +1,194 @@
-import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import api from '../services/api';
+"use client"
 
+import type React from "react"
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+
+// Types
 interface User {
-  id: string;
-  username: string;
-  role: 'student' | 'staff' | 'admin';
+  id: string
+  name: string
+  email: string
+  role: "student" | "staff" | "admin"
+  universityId?: string
 }
 
 interface AuthContextType {
-  user: User | null;
-  isLoading: boolean;
-  error: string | null;
-  login: (username: string, password: string) => Promise<void>;
-  logout: () => void;
-  register: (userData: {
-    username: string;
-    password: string;
-    role: string;
-  }) => Promise<void>;
-  clearError: () => void;
+  user: User | null
+  isAuthenticated: boolean
+  login: (email: string, password: string, role: string) => Promise<boolean>
+  register: (userData: RegisterData) => Promise<boolean>
+  logout: () => void
+  loading: boolean
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+interface RegisterData {
+  fullName: string
+  email: string
+  password: string
+  universityId: string
+  role: string
+}
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+// Create Context
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-  // Check existing session on initial load
+// Auth Provider Component
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  // Check for existing session on mount
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuthStatus = () => {
       try {
-        const token = localStorage.getItem('token');
-        if (token) {
-          const response = await api.get('/auth/me');
-          setUser(response.data);
+        const savedUser = localStorage.getItem("greenwood_user")
+        const savedToken = localStorage.getItem("greenwood_token")
+
+        if (savedUser && savedToken) {
+          setUser(JSON.parse(savedUser))
         }
-      } catch (err) {
-        localStorage.removeItem('token');
-        setError('Session expired. Please login again.');
+      } catch (error) {
+        console.error("Error checking auth status:", error)
+        // Clear invalid data
+        localStorage.removeItem("greenwood_user")
+        localStorage.removeItem("greenwood_token")
       } finally {
-        setIsLoading(false);
+        setLoading(false)
       }
-    };
-
-    checkAuth();
-  }, []);
-
-  const login = async (username: string, password: string) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await api.post('/auth/login', { username, password });
-      localStorage.setItem('token', response.data.token);
-      setUser(response.data.user);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
-      throw err;
-    } finally {
-      setIsLoading(false);
     }
-  };
+
+    checkAuthStatus()
+  }, [])
+
+  // Mock users database
+  const mockUsers = [
+    {
+      id: "1",
+      name: "Alex Johnson",
+      email: "student@greenwood.edu",
+      password: "password123",
+      role: "student" as const,
+      universityId: "GU123456",
+    },
+    {
+      id: "2",
+      name: "Sarah Wilson",
+      email: "staff@greenwood.edu",
+      password: "password123",
+      role: "staff" as const,
+      universityId: "GU789012",
+    },
+    {
+      id: "3",
+      name: "Admin User",
+      email: "admin@greenwood.edu",
+      password: "password123",
+      role: "admin" as const,
+      universityId: "GU000001",
+    },
+  ]
+
+  const login = async (email: string, password: string, role: string): Promise<boolean> => {
+    setLoading(true)
+
+    try {
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      // Find user in mock database
+      const foundUser = mockUsers.find((u) => u.email === email && u.password === password && u.role === role)
+
+      if (foundUser) {
+        const userData: User = {
+          id: foundUser.id,
+          name: foundUser.name,
+          email: foundUser.email,
+          role: foundUser.role,
+          universityId: foundUser.universityId,
+        }
+
+        // Save to localStorage
+        localStorage.setItem("greenwood_user", JSON.stringify(userData))
+        localStorage.setItem("greenwood_token", "mock_jwt_token_" + Date.now())
+
+        setUser(userData)
+        return true
+      }
+
+      return false
+    } catch (error) {
+      console.error("Login error:", error)
+      return false
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const register = async (userData: RegisterData): Promise<boolean> => {
+    setLoading(true)
+
+    try {
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+
+      // Check if user already exists
+      const existingUser = mockUsers.find((u) => u.email === userData.email)
+      if (existingUser) {
+        return false
+      }
+
+      // Create new user
+      const newUser: User = {
+        id: Date.now().toString(),
+        name: userData.fullName,
+        email: userData.email,
+        role: userData.role as "student" | "staff" | "admin",
+        universityId: userData.universityId,
+      }
+
+      // Add to mock database (in real app, this would be an API call)
+      mockUsers.push({
+        ...newUser,
+        password: userData.password, 
+      })
+
+      // Auto-login after registration
+      localStorage.setItem("greenwood_user", JSON.stringify(newUser))
+      localStorage.setItem("greenwood_token", "mock_jwt_token_" + Date.now())
+
+      setUser(newUser)
+      return true
+    } catch (error) {
+      console.error("Registration error:", error)
+      return false
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-  };
-
-  const register = async (userData: {
-    username: string;
-    password: string;
-    role: string;
-  }) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      await api.post('/auth/register', userData);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const clearError = () => setError(null);
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        error,
-        login,
-        logout,
-        register,
-        clearError
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    localStorage.removeItem("greenwood_user")
+    localStorage.removeItem("greenwood_token")
+    setUser(null)
   }
-  return context;
-};
+
+  const value: AuthContextType = {
+    user,
+    isAuthenticated: !!user,
+    login,
+    register,
+    logout,
+    loading,
+  }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
+
+// Custom hook to use auth context
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider")
+  }
+  return context
+}

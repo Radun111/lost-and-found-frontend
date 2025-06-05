@@ -1,30 +1,19 @@
+// src/services/authService.ts
 import api from './api';
-import { User } from '../types/auth';
+import { LoginResponse, RegisterData, User } from '../types/auth';
 
-
-interface LoginResponse {
-  token: string;
-  user: User;
-  expiresIn: number; // in seconds
-}
-
-export const login = async (
-  username: string, 
-  password: string
-): Promise<LoginResponse> => {
+export const login = async (username: string, password: string): Promise<LoginResponse> => {
   try {
-    const response = await api.post<LoginResponse>('/auth/login', { 
-      username, 
-      password 
-    });
-    return {
-      token: response.data.token,
-      user: response.data.user,
-      expiresIn: response.data.expiresIn || 3600 // default 1 hour
-    };
-  } catch (error) {
-    throw new Error(error.response?.data?.message || 'Login failed');
+    const response = await api.post<LoginResponse>('/auth/login', { username, password });
+    return response.data;
+  } catch (error: unknown) {
+    const err = error as { response?: { data?: { message?: string } } };
+    throw new Error(err.response?.data?.message || 'Login failed');
   }
+};
+
+export const register = async (userData: RegisterData): Promise<void> => {
+  await api.post('/auth/register', userData);
 };
 
 export const refreshToken = async (): Promise<{ token: string }> => {
@@ -36,19 +25,7 @@ export const logout = async (): Promise<void> => {
   await api.post('/auth/logout');
 };
 
-export const register = async (userData: {
-  username: string;
-  password: string;
-  role: string;
-}): Promise<void> => {
-  await api.post('/auth/register', {
-    ...userData,
-    password: await hashPassword(userData.password) // Add hashing
-  });
+export const getCurrentUser = async (): Promise<User> => {
+  const response = await api.get('/auth/me');
+  return response.data;
 };
-
-// Helper function (add to new utils/auth.ts)
-const hashPassword = async (password: string): Promise<string> => {
-  // Implement bcrypt or similar hashing
-};
-
