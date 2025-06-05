@@ -70,34 +70,34 @@ src/
 🖼️ Screenshots
 
 🔐 Login Page
-![Login Page]![alt text](assests/loginpg.png)
+![alt text](assests/loginpg.png)
 
 📝 Register Page
-![Register Page](./assets/registerpg.png)
+![alt text](assests/registerpg.png)
 
 🧑‍🎓 Student Dashboard
-![Student Dashboard](./assets/studashboard.png)
+![alt text](assests/studashboard.png)
 
 📋 My Reports (Student)
-![My Reports](./assets/stumyreports.png)
+![alt text](assests/stumyreports.png)
 
 📝 Report Lost Item (Student)
-![Report Item](./assets/stureportitems.png)
+![alt text](assests/stureportitems.png)
 
 👩‍🏫 Staff Dashboard
-![Staff Dashboard](./assets/staffdashboard.png)
+![alt text](assests/staffdashboard.png)
 
 📥 Staff Requests Page
-![Staff Requests](./assets/staffrequests.png)
+![alt text](assests/staffrequests.png)
 
 🧑‍💼 Admin Dashboard
-![Admin Dashboard](./assets/admindashboard.png)
+![alt text](assests/admindashboard.png)
 
 📩 Admin Requests
-![Admin Requests](./assets/adminrequests.png)
+![alt text](assests/adminrequests.png)
 
 👥 Admin User Management
-![Admin Users](./assets/adminusers.png)
+![alt text](assests/adminusers.png)
 
 
 ## 🚀 Installation and Setup
