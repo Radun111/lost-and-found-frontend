@@ -68,8 +68,9 @@ src/
 ```
 
 🖼️ Screenshots
+
 🔐 Login Page
-![Login Page](./assets/loginpg.png)
+![Login Page]![alt text](assests/loginpg.png)
 
 📝 Register Page
 ![Register Page](./assets/registerpg.png)
