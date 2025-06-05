@@ -67,13 +67,45 @@ src/
 └── main.tsx           # Application entry point
 ```
 
+🖼️ Screenshots
+🔐 Login Page
+![Login Page](./assets/loginpg.png)
+
+📝 Register Page
+![Register Page](./assets/registerpg.png)
+
+🧑‍🎓 Student Dashboard
+![Student Dashboard](./assets/studashboard.png)
+
+📋 My Reports (Student)
+![My Reports](./assets/stumyreports.png)
+
+📝 Report Lost Item (Student)
+![Report Item](./assets/stureportitems.png)
+
+👩‍🏫 Staff Dashboard
+![Staff Dashboard](./assets/staffdashboard.png)
+
+📥 Staff Requests Page
+![Staff Requests](./assets/staffrequests.png)
+
+🧑‍💼 Admin Dashboard
+![Admin Dashboard](./assets/admindashboard.png)
+
+📩 Admin Requests
+![Admin Requests](./assets/adminrequests.png)
+
+👥 Admin User Management
+![Admin Users](./assets/adminusers.png)
+
+
 ## 🚀 Installation and Setup
 
 1. Clone the repository:
 
 
 ```shellscript
-git clone https://github.com/yourusername/lost-and-found-frontend.git
+git clone https://github.com/Radun111/lost-and-found-frontend
 cd lost-and-found-frontend
 ```
 
@@ -109,60 +141,4 @@ Use these credentials to test different user roles:
 | Student | [student@greenwood.edu](mailto:student@greenwood.edu) | password123
 
 
-## 📱 Responsive Design
 
-The application is fully responsive and works on:
-
-- Desktop computers
-- Tablets
-- Mobile devices
-
-
-## 🔒 Role-Based Access Control
-
-| Page | Admin | Staff | Student
-|-----|-----|-----
-| Dashboard | ✅ | ✅ | ✅
-| Requests | ✅ | ✅ | ❌
-| Users | ✅ | ❌ | ❌
-| Report Item | ❌ | ❌ | ✅
-| My Reports | ❌ | ❌ | ✅
-
-
-## 🧪 Testing
-
-Run tests with:
-
-```shellscript
-npm test
-```
-
-## 📝 Future Enhancements
-
-- Integration with backend API
-- Real-time notifications
-- Image upload for lost items
-- Advanced search and filtering
-- Email notifications
-- Mobile app version
-
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 👥 Contributors
-
-- Your Name - Initial work and development
-
-
-## 🙏 Acknowledgments
-
-- Shadcn/UI for the component library
-- Tailwind CSS for the styling framework
-- React Router team for the routing library
-
-
----
-
-*This project was created as part of the CMJD - Comprehensive Master Java Developer course assignment.*
